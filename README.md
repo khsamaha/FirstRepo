@@ -7,8 +7,6 @@ Ralph Sundberg, Ph. D.
 
 http://www.ucdp.uu.se/downloads/
 
-please check the attached PDF Codebook
-
 Content
 The dataset contains 135 181 events. GED 17.1 is a global dataset that covers the entirety of the Globe (excluding Syria) between 1989-01-01 and 2016-12-31.
 The maximum (best) spatial resolution of the dataset is the individual village or town. The dataset is fully geocoded. The maximum (best) temporal resolution of the dataset is the day.
