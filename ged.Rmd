@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### INTRODUCTION
 
+UCDP Georeferenced Event Dataset Context The basic unit of analysis for the UCDP GED dataset is the “event”, i.e. an individual incident (phenomenon) of lethal violence occurring at a given time and place. This version authored by: Mihai Croicu, Ralph Sundberg, Ph. D.
 This is a preliminary exploratory analysis.
 Questions:
 
