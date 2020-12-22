@@ -41,7 +41,6 @@ However, if you guys think that i should take "low" or "high"", so i'm open to d
 - The number of deaths per year (deaths_a, deaths_b, deaths_civilians and deaths_ uknown) NO 1994.
 - What about one-day Event Duration?   
 
-
 before we start let have an explanation regarding the variables (best,low,high), the following descriptions are according to the UCDP Codebook uploaded with Dataset.   
  
 - a low estimate, containing the most conservative estimate of deaths that is identified in the source material; 
@@ -55,14 +54,11 @@ In order for an event to exist, at least one dead needs to be registered in the 
 
 This dataset is great for exploratory analysis, for example and according to this dataset the number of deaths from 1989 to 2016 **(excluding Syria)** is about 2mln.
 
-
 sum(ged$best) = 1,958,895
 
 sum(ged$low)  = 1,555,442
 
 sum(ged$high) = 2,906,495
-
-
 
 OK let's start!
 #### Libraries
@@ -76,9 +72,7 @@ OK let's start!
 - formatR
 - scales
 
-
 ```{r include=TRUE, warning=FALSE, message=FALSE ,echo=FALSE}
-
 warn.conflicts = FALSE
 suppressMessages(library(tidyverse))
 suppressMessages(library(lubridate))
@@ -91,11 +85,7 @@ suppressMessages(library(scales))
 
 ```
 
-
-
 ```{r import Data}
-
-
 ged<-read_csv("ged201.csv")
 sapply(ged,class)
 
@@ -104,9 +94,6 @@ sum(ged$low)
 sum(ged$high)
 
 ```
-
-
-
 #### Theme
 
 - let's create a special theme for this kernel, hope you will like it
@@ -127,7 +114,6 @@ ged.theme <- theme(
 
 ```
 
-
 #### Zero Deaths !!
 
 As mentioned in codebook "In order for an event to exist, at least one dead needs to be registered in the high, best or low estimate."
@@ -139,19 +125,15 @@ Ok let's see it:
 nrow(ged[ged$best == 0 &ged$low==0 & ged$high==0 , ])
 
 ```
-
-
 0 rows!...Yes indeed at least one dead needs to be registered in the high, best or low estimate.
 
 Here appears the need of another variables drive the best high and low , as following:
  
 **A- number_of_sources:** 
 Number of total sources containing information for an event that were consulted.
-
-  
+ 
 - Note that this variable is only available for data collected for 2013 - 2016, and for recently revised events. 
-                        
-                         
+                                                
 -  For older data, -1. Note that -1 does NOT mean information on the source is missing;reference to the source material is ALWAYS available in the source_article field. 
 
   **B- where_prec:** The precision with which the coordinates and location assigned to the event reflects the location of the actual event.
@@ -170,7 +152,6 @@ Number of total sources containing information for an event that were consulted.
 
 - 7: event in international waters or airspace.
                  
-
 **C- event_clarity:**
 
 - 1- (high) for events where the reporting allows the coder to identify the event in full. 
@@ -185,7 +166,6 @@ Number of total sources containing information for an event that were consulted.
 - 3: only the week of the event is known 
 - 4: the date of the event is known only within an 8-30 day range or only the month when the event has taken place is known 
 - 5: the date of the event is known only within a range longer than one month but not more than one calendar year. 
-
 
 Let's create a new data frame based on ged$best = 0 and add a new variable as Event Duration.
 
@@ -202,7 +182,6 @@ for (i in nrow(ged)) {
 }
 
 ged$duration.even <- duration.even
-
 
 ged$duration.even <- ged$date_end - ged$date_start
 
@@ -233,9 +212,7 @@ summary(zero.deaths.best[, c(9:15)])
 
 ```
 
-
-WOW ... interesting, how come the (ged$best) and most reliable estimate is 0 and MAX of (ged$high) is 11000 ? more interesting is that the Max of event duration is 365 and the ged$best estimate is 0.
-
+WOW ... interesting, how come the (ged$best) and most reliable estimate is 0 and MAX of (ged$high) is 11000? more interesting is that the Max of event duration is 365 and the ged$best estimate is 0.
 
 ```{r}
 
@@ -243,20 +220,15 @@ zero.deaths.best[zero.deaths.best$high == 0,]
 
 ```
  
- 
 (62 days) and (85 days) events durations with (0) fatalities in (ged$best), and (33) & (5) fatalities in (ged$low).  
-
 
 ```{r}
 
 zero.deaths.best[zero.deaths.best$high == 11000,]
  
 ```
+One-day duration with fatalities of 11000 and 0 in both (ged$best) and (ged$low) ...we have to check the resources and other staff. 
 
-
-One-day duration with fatalities of 11000 and 0 in both (ged$best) and (ged$low) ...we have to check the resources and other staff.
- 
- 
 ```{r}
 
 zero.deaths.best[zero.deaths.best$duration.even > 364,]
@@ -264,7 +236,6 @@ zero.deaths.best[zero.deaths.best$duration.even > 364,]
 nrow(zero.deaths.best[zero.deaths.best$duration.even > 364,])
  
 ```
-
 
 20 rows of 365 days in ged$duration.even variable and 0s fatalities in (ged$best) 
 
@@ -289,13 +260,9 @@ levels(ged$region)
 
 ```
 
-
-Good... long time i didn't use piping, let's use it now for i miss it..
-
 Note : I will take the range between 50 and 1000 deaths for plotting purpose, in any the result will remain the same as summarized by the first pipe.
 
 ```{r}
-
 
 ged %>% select(year, region, best) %>%
   group_by(region) %>%
@@ -322,10 +289,6 @@ ged %>%
        y = "Number of Deaths")
 
 ```
-
-
-
-
 
 ```{r}
 
@@ -354,16 +317,11 @@ ged %>% select(year, region, best) %>%
 
 ```
 
-
 Not surprisingly! Americas is the lowest, Africa is the highest the lower number in Africa was between 2005 - 2011...and starts trending down from 2014 to 2016...   
-
 
 so far so good ...let's find out which country in Americas has the lowest number of deaths... of course regardless of the population of each country...
 
-
 ```{r}
-
-
 americas.ged.best <- ged %>% select(region, country, best) %>%
   filter(region == "Americas" &
            best > 0) %>%
@@ -477,14 +435,9 @@ plot.amer.low
 
 ```
 
-
-
-
 OK let's go through countries across the world!
 
-
 #### Country: Mean (Deaths)
-
 
 ```{r}
 country.d.mean <- tapply(ged$best, ged$country , mean)
@@ -511,8 +464,6 @@ ggplot(country.d.mean[country.d.mean$country.mean.d > 16,],
        y = "Mean")
 
 ```
-
-
 Rwanda is the TOP , remember that the events with 1 death are in for now!
 
 let's see the deaths by year.
@@ -542,14 +493,8 @@ ggplot(year.mean, aes(x = as.factor(year), y = mean)) +
        y = "mean")
 
 ```
-
-
 1994 is the TOP 1 ...lets see why?
-
-
 I will check the Summary and use the highest numbers to filter the data so to not be crowded.
-
-
 
 ```{r}
 y1994 <- ged[ged$year == 1994, c(2, 8, 40)]
@@ -564,20 +509,11 @@ summary(y1994_group$total)
 
 
 ```
-
-
-
 I do not like this kind of numbers (500000) looks like someone put it as it is the Maximum, because the real number was not available.
-
 
 Let's Plot it
 
-
 ```{r}
-
-
-
-
 
 ggplot(y1994_group[between(y1994_group$total, 2000, 500000),], aes(x = dyad.name , y =
                                                                      total)) +
@@ -594,10 +530,7 @@ ggplot(y1994_group[between(y1994_group$total, 2000, 500000),], aes(x = dyad.name
   ggtitle("Happened in 1994?") +
   labs(x = "Dyad Name",
        y = "Total Deaths")
-
 ```
-
-
 Again Rwanda let's see the Dyad name
 
 ```{r}
@@ -628,12 +561,9 @@ ggplot(rwanda.dyad.1994.sum, aes(x = dyad.name , y = total)) +
 
 ```
 
-
 Not surprisingly, Civilians! 
 
 ```{r}
-
-
 
 rwanda.where.1994.sum <-
   aggregate(list(total = rwanda.1994$best),
@@ -664,8 +594,6 @@ ggplot(rwanda.where.1994.sum[rwanda.where.1994.sum$total >= 5000,],
 
 ```
 
-
-
 I think they put Rwanda because they have not got the correct names of places, it mean that reporting was not effective.
 
 So let's remove observation "Rwanda" to see the result!
@@ -691,13 +619,8 @@ ggplot(rwanda.where.1994.sum[rwanda.where.1994.sum$where != "Rwanda" &
 
 ```
 
-
 KARAMA CHURCH, let's check and see what we can find..40000 deaths ??? 
-
-
 ```{r}
-
-
 karama.church <- ged[ged$where_coordinates == "Karama church", ]
 nrow(karama.church)
 karama.church[, c(15, 21, 32, 33, 40:43)]
@@ -706,25 +629,15 @@ karama.church[, "source_article"]
 
 
 ```
-
-
-
 40000 civilians were killed during 1 day; event_clarity is 1 and date_prec is 1 and of caurse where_prec is 1.
-
 number_of_sources is -1 because the event happened before 2013...
-
 
 im sure this day became unforgettable day for this area
 
-
 Now, let's calculate and plot the Number of deaths by deaths_a, deaths_b, deaths_civilians and deaths_ uknown.
-
 
 ```{r}
 
-
-################################
-################################
 
 deaths.a.b.c.u <- ged[ged$best > 0 , c(2, 36:40)]
 
@@ -776,11 +689,7 @@ deaths.a.b.c.u.group.melt <- melt(agre.death, id = "year")
 
 ```
 
-
-
-
 #### No 1994 again!!
-
 
 ```{r}
 
@@ -807,12 +716,9 @@ ggplot(deaths.a.b.c.u.group.melt[deaths.a.b.c.u.group.melt$year != 1994,],
        y = "Number of Deaths")
 
 ```
-
-
 Interesting, but more factors need to be Considered.
 
 Now let's move to Event Duration Of One Day
-
 
 ```{r}
 
@@ -832,8 +738,6 @@ group.1.day$percent.freq <-
   ), 2))
  
 ```
-
-
 
 ```{r}
 
@@ -863,15 +767,11 @@ ggplot(group.1.day[group.1.day$percent.freq >= 2, ],
 
 ```
 
-
 Note: I have replaced the 0 Duration in the duration.even feature with 1.
 
 Government of Afganistan and Taleban , the TOP 1 ..with ~10 % more than the 2nd (Government of India- Kashmir insurgents) 
 
-
 ```{r}
-
-
 dyad.freq <-
   summarise(group_by(ged, dyad.name = ged$dyad_name), freq = n())
 
@@ -904,13 +804,4 @@ ggplot(dyad.top.10,
 
 ```
 
-
-
-I need more time to digest these numbers, and hope to go through them effectively for to understand the pattern-if any.
-
-`Motivation` .... Thank you for your time and please UPVOTE if you liked it.
-
-
-
-
-
+Thanks
